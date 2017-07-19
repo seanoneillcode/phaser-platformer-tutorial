@@ -1,0 +1,14 @@
+if standing and starting press:
+    start jump
+else - if already jumping and ongoing press:
+    continue jump
+
+
+onDown:
+    if standing:
+    mark as jumping
+    start jump
+onUp:
+    mark as not jumping
+onHold:
+    if jumping - jump more
