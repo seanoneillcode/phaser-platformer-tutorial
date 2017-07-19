@@ -29,23 +29,6 @@ Hero.prototype.jump = function() {
         this.body.velocity.y = -400;
 };
 
-// Hero.prototype.jump = function(pressDuration) {
-//     var startingJump = false;
-//
-//     if (this.body) {
-//         startingJump = (this.body.touching.down && !pressDuration);
-//         var ongoingJump = (this.body.velocity.y < 0 && pressDuration && pressDuration < 500);
-//
-//         console.log(pressDuration);
-//         if (startingJump)
-//             this.body.velocity.y = -600;
-//         else if (ongoingJump)
-//             this.body.velocity.y = -300;
-//     }
-//
-//     return startingJump;
-// };
-
 Hero.prototype.bounce = function() {
     const SPEED = 200;
     this.body.velocity.y = -SPEED;

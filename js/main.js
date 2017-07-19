@@ -20,12 +20,6 @@ PlayState.init = function(args) {
         up: Phaser.KeyCode.UP,
     });
 
-    // this.keys.up.onDown.add(function(key) {
-    //     var jumped = this.hero.jump(key.duration);
-    //     if (jumped)
-    //         this.sfx.jump.play();
-    // }, this);
-
     this.keys.up.onDown.add(function() {
         if (this.hero.body.touching.down) {
             this.hero.isJumping = true;

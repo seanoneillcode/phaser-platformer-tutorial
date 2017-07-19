@@ -16,20 +16,11 @@ PlayState.handleInput = function() {
     else
         this.hero.move(0);
 
-    if (this.hero.body.velocity.y < 0)
-        console.log(this.hero.body.velocity.y);
-
     // holding key for a short time
     if (this.keys.up.isDown) {
         if (this.keys.up.duration > 0 && this.keys.up.duration < 200 && this.hero.isJumping)
             this.hero.jump();
     }
-
-    // if (this.keys.up.isDown) {
-    //     var startedJump = this.hero.jump(this.keys.up.duration);
-    //     if (startedJump)
-    //         this.sfx.jump.play();
-    // }
 };
 
 PlayState.fadeCamera = function(fadeIn) {
