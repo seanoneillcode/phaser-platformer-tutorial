@@ -23,9 +23,16 @@ PlayState.handleInput = function() {
     }
 };
 
-PlayState.fadeCamera = function(fadeIn) {
-    if (fadeIn)
-        this.game.camera.flash(0, 500);
-    else
-        this.game.camera.fade(0, 500);
+PlayState.fadeCamera = function(fadeToScene, next, context) {
+    const SPEED = 500;
+
+    if (fadeToScene) {
+        if (next)
+            this.game.camera.onFlashComplete.add(next, context);
+        this.game.camera.flash(0, SPEED);
+    } else {
+        if (next)
+            this.game.camera.onFadeComplete.add(next, context);
+        this.game.camera.fade(0, SPEED);
+    }
 };

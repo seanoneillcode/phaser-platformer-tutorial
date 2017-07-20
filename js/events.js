@@ -4,16 +4,16 @@ PlayState.onHeroVsSpider = function(hero, spider) {
     if (spider.body.touching.up) {
         hero.bounce();
         spider.die();
-    } else
-        this.game.state.restart(true, false, {
-            level: 0
-        });
+    } else if (!this.hero.isDying) {
+        this.hero.isDying = true;
+        this.hero.die();
+    }
 };
 
 PlayState.onHeroVsCoin = function(hero, coin) {
     this.sfx.coin.play();
     this.coinCount++;
-    this.coinFont.text = `x${this.coinCount}`;
+    this.coinFont.text = 'x' + this.coinCount;
     coin.kill();
 };
 
@@ -22,8 +22,11 @@ PlayState.onHeroVsDoor = function(hero, door) {
         if (!this.heroInDoor) {
             this.sfx.door.play();
             this.door.animations.play('open');
-            // End of fade triggers a restart of the next level
-            this.fadeCamera(false);
+            this.fadeCamera(false, function() {
+                this.game.state.restart(true, false, {
+                    level: this.level + 1,
+                });
+            }, this);
         }
         this.heroInDoor = true;
     }

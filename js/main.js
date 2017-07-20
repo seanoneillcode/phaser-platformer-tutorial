@@ -35,13 +35,6 @@ PlayState.init = function(args) {
     PlayState.hasKey = false;
 
     this.level = (args.level || 0) % LEVEL_COUNT;
-
-    // Fading to black is called when finishing level
-    this.game.camera.onFadeComplete.add(function() {
-        this.game.state.restart(true, false, {
-            level: this.level + 1,
-        });
-    }, this);
 };
 
 PlayState.preload = function() {
@@ -76,10 +69,8 @@ PlayState.preload = function() {
     this.game.load.spritesheet('deco', 'images/decor.png', 42, 42);
 };
 
-PlayState.music = null;
-
 PlayState.create = function() {
-    const VOLUME = 0.6;
+    const VOLUME = 0.2;
 
     this.sfx = {
         jump: this.game.add.audio('sfx:jump', VOLUME),

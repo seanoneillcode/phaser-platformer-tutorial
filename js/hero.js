@@ -9,9 +9,11 @@ function Hero(game, x, y) {
     this.animations.add('walk', [1, 2], 8, true);
     this.animations.add('jump', [3]);
     this.animations.add('fall', [4]);
+    this.animations.add('die', [5, 6, 5, 6, 5, 6], 8);
+
+    this.animations.play('stop');
 }
 
-// inherit from Phaser.Sprite
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
 
@@ -20,7 +22,7 @@ Hero.prototype.move = function(direction) {
     this.body.velocity.x = direction * SPEED;
     if (this.body.velocity.x < 0)
         this.scale.x = -1;
-    else
+    else if (this.body.velocity.x > 0)
         this.scale.x = 1;
 };
 
@@ -34,7 +36,7 @@ Hero.prototype.bounce = function() {
     this.body.velocity.y = -SPEED;
 };
 
-Hero.prototype.getAnimName = function() {
+Hero.prototype.getMoveAnimName = function() {
     var name = 'stop';
 
     if (this.body.velocity.y < 0)
@@ -47,8 +49,20 @@ Hero.prototype.getAnimName = function() {
     return name;
 };
 
+Hero.prototype.die = function() {
+    this.animations.play('die').onComplete.addOnce(function() {
+        PlayState.fadeCamera(false, function() {
+            PlayState.game.state.restart(true, false, {
+                level: 0
+            });
+        });
+    });
+};
+
 Hero.prototype.update = function() {
-    var animName = this.getAnimName();
-    if (this.animations.name !== animName)
-        this.animations.play(animName);
+    const ALL_MOVE_ANIMS = ['stop', 'jump', 'fall', 'walk'];
+    var newAnim = this.getMoveAnimName();
+    var curAnim = this.animations.name;
+    if (!curAnim || (ALL_MOVE_ANIMS.includes(curAnim) && curAnim !== newAnim))
+        this.animations.play(newAnim);
 };
