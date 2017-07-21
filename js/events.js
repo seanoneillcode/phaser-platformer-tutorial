@@ -18,23 +18,27 @@ PlayState.onHeroVsCoin = function(hero, coin) {
 };
 
 PlayState.onHeroVsDoor = function(hero, door) {
-    if (this.hasKey) {
-        if (!this.heroInDoor) {
+    if (this.heroHasKey) {
+        if (!this.heroMovingToDoor) {
+            this.heroMovingToDoor = true;
             this.sfx.door.play();
             this.door.animations.play('open');
-            this.fadeCamera(false, function() {
-                this.game.state.restart(true, false, {
-                    level: this.level + 1,
-                });
-            }, this);
         }
-        this.heroInDoor = true;
     }
 };
 
 PlayState.onHeroVsKey = function(hero, key) {
-    this.hasKey = true;
+    this.heroHasKey = true;
     this.sfx.key.play();
     this.keyIcon.frame = 1;
     key.kill();
+};
+
+PlayState.onHeroInDoor = function() {
+    this.hero.animations.play('blink');
+    this.fadeCamera(false, function() {
+        this.game.state.restart(true, false, {
+            level: this.level + 1,
+        });
+    }, this);
 };

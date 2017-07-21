@@ -147,7 +147,7 @@ PlayState.init = function (data) {
     }, this);
 
     this.coinPickupCount = 0;
-    this.hasKey = false;
+    this.heroHasKey = false;
     this.level = (data.level || 0) % LEVEL_COUNT;
 };
 
@@ -204,7 +204,7 @@ PlayState.update = function () {
     this._handleInput();
 
     this.coinFont.text = `x${this.coinPickupCount}`;
-    this.keyIcon.frame = this.hasKey ? 1 : 0;
+    this.keyIcon.frame = this.heroHasKey ? 1 : 0;
 };
 
 PlayState._handleCollisions = function () {
@@ -221,7 +221,7 @@ PlayState._handleCollisions = function () {
     this.game.physics.arcade.overlap(this.hero, this.door, this._onHeroVsDoor,
         // ignore if there is no key or the player is on air
         function (hero, door) {
-            return this.hasKey && hero.body.touching.down;
+            return this.heroHasKey && hero.body.touching.down;
         }, this);
 };
 
@@ -349,7 +349,7 @@ PlayState._onHeroVsEnemy = function (hero, enemy) {
 PlayState._onHeroVsKey = function (hero, key) {
     this.sfx.key.play();
     key.kill();
-    this.hasKey = true;
+    this.heroHasKey = true;
 };
 
 PlayState._onHeroVsDoor = function (hero, door) {

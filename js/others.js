@@ -16,8 +16,8 @@ PlayState.handleInput = function() {
     else
         this.hero.move(0);
 
-    // holding key for a short time
     if (this.keys.up.isDown) {
+        // holding the key for a short time
         if (this.keys.up.duration > 0 && this.keys.up.duration < 200 && this.hero.isJumping)
             this.hero.jump();
     }

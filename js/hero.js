@@ -10,6 +10,7 @@ function Hero(game, x, y) {
     this.animations.add('jump', [3]);
     this.animations.add('fall', [4]);
     this.animations.add('die', [5, 6, 5, 6, 5, 6], 8);
+    this.animations.add('blink', [0, 6, 0, 6, 0, 6], 8);
 
     this.animations.play('stop');
 }

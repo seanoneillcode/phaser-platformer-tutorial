@@ -31,8 +31,9 @@ PlayState.init = function(args) {
         this.hero.isJumping = false;
     }, this);
 
-    PlayState.coinCount = 0;
-    PlayState.hasKey = false;
+    this.coinCount = 0;
+    this.heroHasKey = false;
+    this.heroMovingToDoor = false;
 
     this.level = (args.level || 0) % LEVEL_COUNT;
 };
@@ -120,4 +121,13 @@ PlayState.createUI = function() {
 PlayState.update = function() {
     this.handleCollisions();
     this.handleInput();
+
+    if (this.heroMovingToDoor) {
+        var heroDoorDelta = this.door.x - this.hero.x;
+        if (heroDoorDelta > -2 && heroDoorDelta < 6) {
+            this.heroMovingToDoor = false;
+            this.onHeroInDoor();
+        } else
+            this.hero.move(heroDoorDelta > 1 ? 1 : -1);
+    }
 };
