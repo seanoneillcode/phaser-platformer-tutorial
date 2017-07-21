@@ -6,7 +6,14 @@ PlayState.onHeroVsSpider = function(hero, spider) {
         spider.die();
     } else if (!this.hero.isDying) {
         this.hero.isDying = true;
-        this.hero.die();
+        this.hero.body.immovable = true;
+        this.hero.die(function() {
+            PlayState.fadeCamera(false, function() {
+                PlayState.game.state.restart(true, false, {
+                    level: 0,
+                });
+            });
+        });
     }
 };
 
@@ -21,6 +28,7 @@ PlayState.onHeroVsDoor = function(hero, door) {
     if (this.heroHasKey) {
         if (!this.heroMovingToDoor) {
             this.heroMovingToDoor = true;
+            this.game.input.enabled = false;
             this.sfx.door.play();
             this.door.animations.play('open');
         }
@@ -35,10 +43,11 @@ PlayState.onHeroVsKey = function(hero, key) {
 };
 
 PlayState.onHeroInDoor = function() {
-    this.hero.animations.play('blink');
-    this.fadeCamera(false, function() {
-        this.game.state.restart(true, false, {
-            level: this.level + 1,
+    this.hero.animations.play('blink').onComplete.addOnce(function() {
+        PlayState.fadeCamera(false, function() {
+            PlayState.game.state.restart(true, false, {
+                level: PlayState.level + 1,
+            });
         });
     }, this);
 };

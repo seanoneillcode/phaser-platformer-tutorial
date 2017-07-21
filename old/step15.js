@@ -141,9 +141,8 @@ PlayState.init = function (data) {
 
     this.keys.up.onDown.add(function () {
         let didJump = this.hero.jump();
-        if (didJump) {
+        if (didJump)
             this.sfx.jump.play();
-        }
     }, this);
 
     this.coinPickupCount = 0;

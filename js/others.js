@@ -23,16 +23,28 @@ PlayState.handleInput = function() {
     }
 };
 
+PlayState.handleDoorEnding = function() {
+    if (this.heroMovingToDoor) {
+        this.heroDoorDelta = this.door.x - this.hero.x + 1.2;
+        if (this.heroDoorDelta > -4 && this.heroDoorDelta < 4) {
+            this.heroMovingToDoor = false;
+            this.hero.move(0);
+            this.onHeroInDoor();
+        } else
+            this.hero.move(this.heroDoorDelta > 1 ? 1 : -1);
+    }
+};
+
 PlayState.fadeCamera = function(fadeToScene, next, context) {
     const SPEED = 500;
 
     if (fadeToScene) {
         if (next)
-            this.game.camera.onFlashComplete.add(next, context);
+            this.game.camera.onFlashComplete.addOnce(next, context);
         this.game.camera.flash(0, SPEED);
     } else {
         if (next)
-            this.game.camera.onFadeComplete.add(next, context);
+            this.game.camera.onFadeComplete.addOnce(next, context);
         this.game.camera.fade(0, SPEED);
     }
 };

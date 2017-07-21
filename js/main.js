@@ -12,32 +12,6 @@ window.onload = function() {
 
 //===================================
 
-PlayState.init = function(args) {
-    this.game.renderer.renderSession.roundPixels = true;
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP,
-    });
-
-    this.keys.up.onDown.add(function() {
-        if (this.hero.body.touching.down) {
-            this.hero.isJumping = true;
-            this.hero.jump();
-            this.sfx.jump.play();
-        }
-    }, this);
-    this.keys.up.onUp.add(function() {
-        this.hero.isJumping = false;
-    }, this);
-
-    this.coinCount = 0;
-    this.heroHasKey = false;
-    this.heroMovingToDoor = false;
-
-    this.level = (args.level || 0) % LEVEL_COUNT;
-};
-
 PlayState.preload = function() {
     this.game.load.json('level:0', 'data/level00.json');
     this.game.load.json('level:1', 'data/level01.json');
@@ -70,6 +44,33 @@ PlayState.preload = function() {
     this.game.load.spritesheet('deco', 'images/decor.png', 42, 42);
 };
 
+PlayState.init = function(args) {
+    this.game.renderer.renderSession.roundPixels = true;
+    this.keys = this.game.input.keyboard.addKeys({
+        left: Phaser.KeyCode.LEFT,
+        right: Phaser.KeyCode.RIGHT,
+        up: Phaser.KeyCode.UP,
+    });
+
+    this.keys.up.onDown.add(function() {
+        if (this.hero.body.touching.down) {
+            this.hero.isJumping = true;
+            this.hero.jump();
+            this.sfx.jump.play();
+        }
+    }, this);
+    this.keys.up.onUp.add(function() {
+        this.hero.isJumping = false;
+    }, this);
+
+    this.coinCount = 0;
+    this.heroHasKey = false;
+    this.heroMovingToDoor = false;
+
+    this.level = 1;
+    // this.level = (args.level || 0) % LEVEL_COUNT;
+};
+
 PlayState.create = function() {
     const VOLUME = 0.2;
 
@@ -92,6 +93,8 @@ PlayState.create = function() {
     this.heroInDoor = false;
 
     this.createUI();
+
+    this.game.input.enabled = true;
 };
 
 PlayState.createUI = function() {
@@ -118,16 +121,14 @@ PlayState.createUI = function() {
     this.ui.add(coinCountIcon);
 };
 
+PlayState.heroDoorDelta = null;
+
 PlayState.update = function() {
     this.handleCollisions();
-    this.handleInput();
 
-    if (this.heroMovingToDoor) {
-        var heroDoorDelta = this.door.x - this.hero.x;
-        if (heroDoorDelta > -2 && heroDoorDelta < 6) {
-            this.heroMovingToDoor = false;
-            this.onHeroInDoor();
-        } else
-            this.hero.move(heroDoorDelta > 1 ? 1 : -1);
-    }
+    // if (!this.heroMovingToDoor)
+    //     this.handleInput();
+    // else {
+    this.handleInput();
+    this.handleDoorEnding();
 };

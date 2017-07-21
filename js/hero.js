@@ -1,4 +1,6 @@
 function Hero(game, x, y) {
+    let X = 7;
+
     // call Phaser.Sprite constructor
     Phaser.Sprite.call(this, game, x, y, 'hero');
     this.anchor.set(0.5, 0.5);
@@ -10,7 +12,8 @@ function Hero(game, x, y) {
     this.animations.add('jump', [3]);
     this.animations.add('fall', [4]);
     this.animations.add('die', [5, 6, 5, 6, 5, 6], 8);
-    this.animations.add('blink', [0, 6, 0, 6, 0, 6], 8);
+    var blinkAnim = this.animations.add('blink', [0, X, 0, X, 0, X, 0], 8);
+    blinkAnim.killOnComplete = true;
 
     this.animations.play('stop');
 }
@@ -50,13 +53,9 @@ Hero.prototype.getMoveAnimName = function() {
     return name;
 };
 
-Hero.prototype.die = function() {
+Hero.prototype.die = function(next) {
     this.animations.play('die').onComplete.addOnce(function() {
-        PlayState.fadeCamera(false, function() {
-            PlayState.game.state.restart(true, false, {
-                level: 0
-            });
-        });
+        next();
     });
 };
 
