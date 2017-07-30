@@ -3,4 +3,4 @@ Phaser.js platformer game, based on the tutorial -
 
 https://mozdevs.github.io/html5-games-workshop/en/guides/platformer/start-here/
 
-THIS CODE IS NOT MY CREATION OR MY PROPERTY, I AM ONLY PRACTICING BY FOLLOWING INSTRUCTIONS FROM THE URL GIVEN HERE, WHICH REPRESENTS THE OWNERS OF THE SOURCE CODE (to the best of my knowledge).
+NOTE: this code is neither my creation nor my property, it's only an excercise in game development from the URL above, which represents the owners of the source code (to the best of my knowledge).
