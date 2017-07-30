@@ -3,6 +3,8 @@ var PlayState = {};
 const LEVEL_COUNT = 2;
 
 window.onload = function() {
+    // let game = new Phaser.Game(docoment.window.width, do, Phaser.AUTO, 'game');
+    // let game = new Phaser.Game('100', '100', Phaser.AUTO, 'game');
     let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
     game.state.add('play', PlayState);
     game.state.start('play', true, false, {
@@ -67,8 +69,8 @@ PlayState.init = function(args) {
     this.heroHasKey = false;
     this.heroMovingToDoor = false;
 
-    this.level = 1;
-    // this.level = (args.level || 0) % LEVEL_COUNT;
+    // this.level = 1;
+    this.level = (args.level || 0) % LEVEL_COUNT;
 };
 
 PlayState.create = function() {

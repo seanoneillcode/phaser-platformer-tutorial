@@ -6,7 +6,8 @@ PlayState.onHeroVsSpider = function(hero, spider) {
         spider.die();
     } else if (!this.hero.isDying) {
         this.hero.isDying = true;
-        this.hero.body.immovable = true;
+        this.hero.body.enable = false;
+        this.game.input.enabled = false;
         this.hero.die(function() {
             PlayState.fadeCamera(false, function() {
                 PlayState.game.state.restart(true, false, {
