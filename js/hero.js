@@ -1,7 +1,10 @@
-function Hero(game, x, y) {
-    let X = 7;
 
-    // call Phaser.Sprite constructor
+
+function Hero(game, x, y) {
+    this.moveSpeed = 200;
+    this.jump_speed = 400;
+    this.bounce_speed = 200;
+
     Phaser.Sprite.call(this, game, x, y, 'hero');
     this.anchor.set(0.5, 0.5);
     this.game.physics.enable(this);
@@ -12,44 +15,43 @@ function Hero(game, x, y) {
     this.animations.add('jump', [3]);
     this.animations.add('fall', [4]);
     this.animations.add('die', [5, 6, 5, 6, 5, 6], 8);
-    var blinkAnim = this.animations.add('blink', [0, X, 0, X, 0, X, 0], 8);
-    blinkAnim.killOnComplete = true;
-
     this.animations.play('stop');
+
 }
 
 Hero.prototype = Object.create(Phaser.Sprite.prototype);
 Hero.prototype.constructor = Hero;
 
 Hero.prototype.move = function(direction) {
-    const SPEED = 200;
-    this.body.velocity.x = direction * SPEED;
-    if (this.body.velocity.x < 0)
+    this.body.velocity.x = direction * this.moveSpeed;
+    if (this.body.velocity.x < 0) {
         this.scale.x = -1;
-    else if (this.body.velocity.x > 0)
+    }
+    if (this.body.velocity.x > 0) {
         this.scale.x = 1;
+    }
 };
 
 Hero.prototype.jump = function() {
-    if (this.body)
-        this.body.velocity.y = -400;
+    if (this.body) {
+        this.body.velocity.y = -this.jump_speed;
+    }
 };
 
 Hero.prototype.bounce = function() {
-    const SPEED = 200;
-    this.body.velocity.y = -SPEED;
+    this.body.velocity.y = -this.bounce_speed;
 };
 
 Hero.prototype.getMoveAnimName = function() {
     var name = 'stop';
 
-    if (this.body.velocity.y < 0)
+    if (this.body.velocity.y < 0) {
         name = 'jump';
-    else if (this.body.velocity.y > 0 && !this.body.touching.down)
+    } else if (this.body.velocity.y > 0 && !this.body.touching.down) {
         name = 'fall';
-    else if (this.body.velocity.x != 0 && this.body.touching.down)
+    } else if (this.body.velocity.x != 0 && this.body.touching.down) {
         name = 'walk';
-
+    }
     return name;
 };
 
@@ -63,6 +65,7 @@ Hero.prototype.update = function() {
     const ALL_MOVE_ANIMS = ['stop', 'jump', 'fall', 'walk'];
     var newAnim = this.getMoveAnimName();
     var curAnim = this.animations.name;
-    if (!curAnim || (ALL_MOVE_ANIMS.includes(curAnim) && curAnim !== newAnim))
+    if (!curAnim || (ALL_MOVE_ANIMS.includes(curAnim) && curAnim !== newAnim)) {
         this.animations.play(newAnim);
+    }
 };

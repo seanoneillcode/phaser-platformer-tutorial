@@ -31,7 +31,14 @@ PlayState.onHeroVsDoor = function(hero, door) {
             this.heroMovingToDoor = true;
             this.game.input.enabled = false;
             this.sfx.door.play();
-            this.door.animations.play('open');
+            this.hero.move(0);
+            this.door.animations.play('open').onComplete.addOnce(function() {
+                PlayState.fadeCamera(false, function() {
+                    PlayState.game.state.restart(true, false, {
+                        level: PlayState.level + 1,
+                    });
+                });
+            }, this);
         }
     }
 };
@@ -41,14 +48,4 @@ PlayState.onHeroVsKey = function(hero, key) {
     this.sfx.key.play();
     this.keyIcon.frame = 1;
     key.kill();
-};
-
-PlayState.onHeroInDoor = function() {
-    this.hero.animations.play('blink').onComplete.addOnce(function() {
-        PlayState.fadeCamera(false, function() {
-            PlayState.game.state.restart(true, false, {
-                level: PlayState.level + 1,
-            });
-        });
-    }, this);
 };

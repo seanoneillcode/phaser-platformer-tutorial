@@ -1,18 +1,17 @@
 var PlayState = {};
 
+// static config
 const LEVEL_COUNT = 2;
+const VOLUME = 0.1;
+const MUSIC_VOLUME = 0.5;
 
 window.onload = function() {
-    // let game = new Phaser.Game(docoment.window.width, do, Phaser.AUTO, 'game');
-    // let game = new Phaser.Game('100', '100', Phaser.AUTO, 'game');
     let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
     game.state.add('play', PlayState);
     game.state.start('play', true, false, {
         level: 0
     });
 };
-
-//===================================
 
 PlayState.preload = function() {
     this.game.load.json('level:0', 'data/level00.json');
@@ -43,7 +42,7 @@ PlayState.preload = function() {
     this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
     this.game.load.spritesheet('door', 'images/door.png', 42, 66);
     this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
-    this.game.load.spritesheet('deco', 'images/decor.png', 42, 42);
+    this.game.load.spritesheet('decorations', 'images/decor.png', 42, 42);
 };
 
 PlayState.init = function(args) {
@@ -69,12 +68,10 @@ PlayState.init = function(args) {
     this.heroHasKey = false;
     this.heroMovingToDoor = false;
 
-    // this.level = 1;
     this.level = (args.level || 0) % LEVEL_COUNT;
 };
 
 PlayState.create = function() {
-    const VOLUME = 0.2;
 
     this.sfx = {
         jump: this.game.add.audio('sfx:jump', VOLUME),
@@ -88,8 +85,9 @@ PlayState.create = function() {
 
     this.loadLevel(this.game.cache.getJSON(`level:${this.level}`));
 
-    if (!this.music)
-        this.music = this.game.add.audio('music');
+    if (!this.music) {
+        this.music = this.game.add.audio('music', MUSIC_VOLUME);
+    }
     this.music.loopFull();
 
     this.heroInDoor = false;
@@ -123,14 +121,46 @@ PlayState.createUI = function() {
     this.ui.add(coinCountIcon);
 };
 
-PlayState.heroDoorDelta = null;
-
 PlayState.update = function() {
     this.handleCollisions();
-
-    // if (!this.heroMovingToDoor)
-    //     this.handleInput();
-    // else {
     this.handleInput();
-    this.handleDoorEnding();
+};
+
+PlayState.handleCollisions = function() {
+    this.game.physics.arcade.collide(this.hero, this.platforms);
+    this.game.physics.arcade.collide(this.spiders, this.platforms);
+    this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
+    this.game.physics.arcade.overlap(this.hero, this.coins, this.onHeroVsCoin, null, this);
+    this.game.physics.arcade.overlap(this.hero, this.door, this.onHeroVsDoor, null, this);
+    this.game.physics.arcade.overlap(this.hero, this.key, this.onHeroVsKey, null, this);
+    this.game.physics.arcade.collide(this.hero, this.spiders, this.onHeroVsSpider, null, this);
+};
+
+PlayState.handleInput = function() {
+    if (this.keys.left.isDown)
+        this.hero.move(-1);
+    else if (this.keys.right.isDown)
+        this.hero.move(1);
+    else
+        this.hero.move(0);
+
+    if (this.keys.up.isDown) {
+        // holding the key for a short time
+        if (this.keys.up.duration > 0 && this.keys.up.duration < 200 && this.hero.isJumping)
+            this.hero.jump();
+    }
+};
+
+PlayState.fadeCamera = function(fadeToScene, next, context) {
+    const SPEED = 500;
+
+    if (fadeToScene) {
+        if (next)
+            this.game.camera.onFlashComplete.addOnce(next, context);
+        this.game.camera.flash(0, SPEED);
+    } else {
+        if (next)
+            this.game.camera.onFadeComplete.addOnce(next, context);
+        this.game.camera.fade(0, SPEED);
+    }
 };

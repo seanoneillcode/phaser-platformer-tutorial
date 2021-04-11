@@ -1,7 +1,13 @@
 PlayState.loadLevel = function(data) {
-    this.addGroups();
+    // groups
+    this.platforms = this.game.add.group();
+    this.coins = this.game.add.group();
+    this.spiders = this.game.add.group();
+    this.enemyWalls = this.game.add.group();
+    this.decorations = this.game.add.group();
 
-    this.spawnDeco(data.decoration);
+    // spawn entities
+    this.spawnDecorations(data.decoration);
     this.spawnDoor(data.door);
     this.spawnKey(data.key);
     data.platforms.forEach(this.spawnPlatform, this);
@@ -19,17 +25,10 @@ PlayState.loadLevel = function(data) {
     this.fadeCamera(true);
 };
 
-PlayState.addGroups = function() {
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-    this.spiders = this.game.add.group();
-    this.enemyWalls = this.game.add.group();
-    this.deco = this.game.add.group();
-};
-
-PlayState.spawnDeco = function(deco) {
-    for (var iDeco = 0, aDeco; aDeco = deco[iDeco]; iDeco++)
-        this.deco.create(aDeco.x, aDeco.y, 'deco', aDeco.frame);
+PlayState.spawnDecorations = function(decorations) {
+    for (var i = 0, item; item = decorations[i]; i++) {
+        this.decorations.create(item.x, item.y, 'decorations', item.frame);
+    }
 };
 
 PlayState.spawnDoor = function(door) {
@@ -84,7 +83,6 @@ PlayState.spawnEnemyWall = function(x, y, side) {
 
 PlayState.spawnCharacters = function(data) {
     data.spiders.forEach(this.spawnSpider, this);
-    // spawn hero
     this.hero = new Hero(this.game, data.hero.x, data.hero.y);
     this.game.add.existing(this.hero);
 };
